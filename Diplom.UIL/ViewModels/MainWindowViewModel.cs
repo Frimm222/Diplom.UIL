@@ -1,11 +1,9 @@
 ﻿using Diplom.BLL.Models;
 using Diplom.DAL;
-using Microsoft.EntityFrameworkCore.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Threading.Tasks;
 namespace Diplom.UIL.ViewModels
 {
     class MainWindowViewModel : BaseViewModel
