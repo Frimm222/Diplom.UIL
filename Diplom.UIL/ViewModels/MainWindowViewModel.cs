@@ -1,9 +1,12 @@
 ﻿using Diplom.BLL.Models;
 using Diplom.DAL;
+using Diplom.UIL.Views;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Threading.Tasks;
+using System.Windows;
 namespace Diplom.UIL.ViewModels
 {
     class MainWindowViewModel : BaseViewModel
@@ -12,8 +15,7 @@ namespace Diplom.UIL.ViewModels
 
         public ObservableCollection<Item> Items { get; } = [];
 
-        [Reactive]
-        public Item? SelectedItem { get; set; }
+        [Reactive] public Item? SelectedItem { get; set; }
 
         public ReactiveCommand<Unit, Unit> AddItemCommand { get; }
         public ReactiveCommand<Unit, Unit> EditItemCommand { get; }
@@ -21,12 +23,18 @@ namespace Diplom.UIL.ViewModels
 
         public MainWindowViewModel()
         {
-
+            AddItemCommand = ReactiveCommand.Create(Add);
+            var canExecuteEdit = this.WhenAnyValue(
+                x => x.SelectedItem,
+                x => x.Items,
+                (item, items) => item is not null && items is not null);
+            EditItemCommand = ReactiveCommand.Create(Edit, canExecuteEdit);
+            DeleteItemCommand = ReactiveCommand.Create(Delete, canExecuteEdit);
             _dataBase = new DataBase();
             LoadItems();
         }
 
-        private void LoadItems()
+        private async Task LoadItems()
         {
             var items = _dataBase.GetAll();
             Items.Clear();
@@ -38,12 +46,22 @@ namespace Diplom.UIL.ViewModels
 
         private void Add()
         {
-            var newItem = new Item();
-            var viewModel = new AddEditItemViewModel(newItem);
-            var window = new AddEditItemWindow(viewModel);
-            if (window.ShowDialog() == true)
+            var viewModel = new AddEditItemWindow(new Item());
+            viewModel.ShowDialog();
+            LoadItems();
+        }
+        private void Edit() {
+            var viewModel = new AddEditItemWindow(SelectedItem);
+            viewModel.ShowDialog();
+            LoadItems();
+        }
+
+        private void Delete()
+        {
+            var res = MessageBox.Show("Удалить позицию?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (SelectedItem is not null && MessageBoxResult.Yes == res)
             {
-                _dataBase.Create(newItem);
+                _dataBase.Delete(SelectedItem.id);
                 LoadItems();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Diplom.BLL.Models;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.Windows.Controls;
 
 public class DataBaseContext : DbContext
 {
@@ -17,5 +18,14 @@ public class DataBaseContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(_connectionString);
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Item>(entity =>
+        {
+            entity.HasKey(p => p.id);
+        });
+
+        base.OnModelCreating(modelBuilder);
     }
 }

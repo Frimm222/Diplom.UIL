@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Diplom.BLL.Models;
+using Diplom.UIL.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,10 @@ namespace Diplom.UIL.Views
     /// </summary>
     public partial class AddEditItemWindow : Window
     {
-        public AddEditItemWindow()
+        public AddEditItemWindow(Item item)
         {
             InitializeComponent();
+            DataContext = new AddEditItemViewModel(item);
         }
     }
 }

@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Diplom.UIL"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Склад" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
     <DockPanel>
-        <ListView Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single" DockPanel.Dock="Top" Height="300">
+        <ListView Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" DockPanel.Dock="Top" Height="300">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Товар"
@@ -19,9 +19,9 @@
             </ListView.View>
         </ListView>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="50">
-            <Button Content="Добавить" Command="{Binding AddCommand}" />
-            <Button Content="Удалить" Command="{Binding DeleteCommand}" />
-            <Button Content="Изменить" Command="{Binding EditCommand}" />
+            <Button Content="Добавить" Command="{Binding AddItemCommand}" />
+            <Button Content="Удалить" Command="{Binding DeleteItemCommand}" />
+            <Button Content="Изменить" Command="{Binding EditItemCommand}" />
         </StackPanel>
     </DockPanel>
     

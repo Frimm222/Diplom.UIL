@@ -48,5 +48,20 @@ namespace Diplom.DAL
                          });
             return items;
         }
+        public List<Category> GetCategories()
+        {
+            var categories = (from c in _context.table_category
+                              select new { c.id, c.name }).ToList();
+            List<Category> categoriesList = new List<Category>();
+            foreach (var category in categories)
+            {
+                categoriesList.Add(new Category
+                {
+                    id = category.id,
+                    name = category.name
+                });
+            }
+            return categoriesList;
+        }
     }
 }

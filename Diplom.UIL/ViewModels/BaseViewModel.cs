@@ -2,7 +2,7 @@
 
 namespace Diplom.UIL.ViewModels
 {
-    class BaseViewModel : ReactiveObject
+    public class BaseViewModel : ReactiveObject
     {
     }
 }
