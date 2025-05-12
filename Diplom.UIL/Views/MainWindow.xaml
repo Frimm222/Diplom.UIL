@@ -3,26 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Diplom.UIL"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
-        Title="Склад" Height="450" Width="800">
+        Title="Склад" Height="450" Width="800" FontSize="16">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
-    <DockPanel>
-        <ListView Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single" DockPanel.Dock="Top" Height="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox Name="searchBox" 
+                 Margin="10"
+                  VerticalAlignment="Top" 
+                  HorizontalAlignment="Stretch" 
+                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                  ToolTip="Поиск по названию" />
+        <ListView Name="listView" 
+                  ItemsSource="{Binding Items}" 
+                  SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectionMode="Single" 
+                  Grid.Row="1">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Товар"
                         DisplayMemberBinding="{Binding name}" />
                     <GridViewColumn Header="Категория"
                         DisplayMemberBinding="{Binding category_id}" />
+                    <GridViewColumn Header="Описание"
+                        DisplayMemberBinding="{Binding description}" />
+                    <GridViewColumn Header="Цена"
+                        DisplayMemberBinding="{Binding price}" />
+                    <GridViewColumn Header="Кол-во"
+                        DisplayMemberBinding="{Binding quantity}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="50">
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    Height="50">
             <Button Content="Добавить" Command="{Binding AddItemCommand}" />
             <Button Content="Удалить" Command="{Binding DeleteItemCommand}" />
             <Button Content="Изменить" Command="{Binding EditItemCommand}" />
         </StackPanel>
-    </DockPanel>
+    </Grid>
     
 </Window>
