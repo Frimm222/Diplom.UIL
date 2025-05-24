@@ -8,7 +8,7 @@ public class DataBaseContext : DbContext
     private readonly string _connectionString;
     public DbSet<Item> table_items { get; set;}
     public DbSet<Category> table_category { get; set; }
-    public DbSet<User> Users => Set<User>();
+    public DbSet<User> table_users {get; set; }
     public DataBaseContext()
     {
         _connectionString = File.ReadAllText(Path.GetFullPath("app.db"));

@@ -13,7 +13,7 @@ namespace Diplom.DAL
         public bool Update(Item item);
         public bool Delete(Guid id);
 
-        public IEnumerable<Item> GetAll();
+        public Task<List<Item>> GetAll();
     }
 
 }

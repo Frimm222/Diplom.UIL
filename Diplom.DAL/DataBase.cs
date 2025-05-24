@@ -1,14 +1,16 @@
 ﻿using Diplom.BLL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Diplom.DAL
 {
     public class DataBase : ICrud
     {
         private readonly DataBaseContext _context;
+        private Guid CurrentId { get; set; }
         public DataBase()
         {
             _context = new DataBaseContext();
@@ -17,7 +19,15 @@ namespace Diplom.DAL
         public bool Create(Item item)
         {
             _context.table_items.Add(item);
-            return _context.SaveChanges() > 0;
+            if (_context.SaveChanges() > 0)
+            {
+                _context.Database.ExecuteSqlRaw($"INSERT INTO table_logging (item_id, text, user_id) VALUES ('{item.id}', 'добавил', '{CurrentId}');");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool Update(Item item)
@@ -32,20 +42,20 @@ namespace Diplom.DAL
             return _context.SaveChanges() > 0;
         }
 
-        public IEnumerable<Item> GetAll()
+        public async Task<List<Item>> GetAll()
         {
-            var items = (from i in _context.table_items
-                         join c in _context.table_category on i.category_id equals c.id.ToString()
-                         select new Item
-                         {
-                             id = i.id,
-                             name = i.name,
-                             description = i.description,
-                             category_id = c.name,
-                             price = i.price,
-                             quantity = i.quantity,
-                             barcode = i.barcode
-                         });
+            var items = await (from i in _context.table_items
+                               join c in _context.table_category on i.category_id equals c.id.ToString()
+                               select new Item
+                               {
+                                   id = i.id,
+                                   name = i.name,
+                                   description = i.description,
+                                   category_id = c.name,
+                                   price = i.price,
+                                   quantity = i.quantity,
+                                   barcode = i.barcode
+                               }).ToListAsync();
             return items;
         }
         public List<Category> GetCategories()
@@ -62,6 +72,23 @@ namespace Diplom.DAL
                 });
             }
             return categoriesList;
+        }
+        public User? GetUser(string login, string password)
+        {
+            var user = (from u in _context.table_users
+                        where u.Login == login && u.Password == password
+                        select new User
+                        {
+                            id = u.id,
+                            Name = u.Name,
+                            Surname = u.Surname,
+                            Patronymic = u.Patronymic,
+                            Login = u.Login,
+                            Password = u.Password,
+                            Role = u.Role
+                        }).FirstOrDefault();
+            CurrentId = user?.id ?? Guid.Empty;
+            return user;
         }
     }
 }

@@ -13,21 +13,30 @@ namespace Diplom.UIL.ViewModels
 {
     class MainWindowViewModel : BaseViewModel
     {
-        private readonly DataBase _dataBase;
+        private readonly DataBase _dataBase = ((App)Application.Current).DataBase;
 
         public ObservableCollection<Item> Items { get; } = [];
-
+        public string CurrentUser { get; set; } = $"{((App)Application.Current).CurrentUser?.Surname} {((App)Application.Current).CurrentUser?.Name} {((App)Application.Current).CurrentUser?.Patronymic}";
+        public string CurrentRole { get; set; } = ((App)Application.Current).CurrentUser?.Role ?? String.Empty;
         [Reactive] public Item? SelectedItem { get; set; }
         [Reactive] public string? SearchText { get; set; } = string.Empty;
-
+        [Reactive] public string? LogText { get; set; } = string.Empty;
         public ReactiveCommand<Unit, Unit> AddItemCommand { get; }
         public ReactiveCommand<Unit, Unit> EditItemCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteItemCommand { get; }
         public ReactiveCommand<Unit, Unit> SearchCommand { get; }
+        public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
 
         public MainWindowViewModel()
         {
             AddItemCommand = ReactiveCommand.Create(Add);
+            LogoutCommand = ReactiveCommand.Create(() =>
+            {
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+                Application.Current.MainWindow?.Close();
+                Application.Current.MainWindow = loginWindow;
+            });
             var canExecuteEdit = this.WhenAnyValue(
                 x => x.SelectedItem,
                 x => x.Items,
@@ -38,19 +47,19 @@ namespace Diplom.UIL.ViewModels
                 x => x.SearchText,
                 (searchText) => !string.IsNullOrEmpty(searchText));
             SearchCommand = ReactiveCommand.Create(Search, canExecuteSearch);
-            _dataBase = new DataBase();
-            LoadItems();
+            //_dataBase = new DataBase();
+            _ = LoadItems();
             this.WhenAnyValue(x => x.SearchText)
-                .Throttle(TimeSpan.FromSeconds(0.8), RxApp.TaskpoolScheduler)
+                .Throttle(TimeSpan.FromSeconds(0.3), RxApp.TaskpoolScheduler)
                 .Select(query => query?.Trim())
                 .DistinctUntilChanged()
                 //.Where(query => !string.IsNullOrWhiteSpace(query))
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => Search()); ;
+                .Subscribe(_ => Search());
         }
-        private void LoadItems()
+        private async Task LoadItems()
         {
-            var items = _dataBase.GetAll();
+            var items = await _dataBase.GetAll();
             Items.Clear();
             foreach (var item in items)
             {
@@ -61,12 +70,12 @@ namespace Diplom.UIL.ViewModels
         {
             var viewModel = new AddEditItemWindow(new Item());
             viewModel.ShowDialog();
-            LoadItems();
+            _ = LoadItems();
         }
         private void Edit() {
             var viewModel = new AddEditItemWindow(SelectedItem);
             viewModel.ShowDialog();
-            LoadItems();
+            _ = LoadItems();
         }
         private void Delete()
         {
@@ -74,12 +83,12 @@ namespace Diplom.UIL.ViewModels
             if (SelectedItem is not null && MessageBoxResult.Yes == res)
             {
                 _dataBase.Delete(SelectedItem.id);
-                LoadItems();
+                _ = LoadItems();
             }
         }
-        private void Search()
+        private async void Search()
         {
-            var items = _dataBase.GetAll();
+            var items = await _dataBase.GetAll(); // Await the Task<List<Item>> to get the actual list
             Items.Clear();
             foreach (var item in items)
             {

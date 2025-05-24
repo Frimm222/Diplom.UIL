@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Diplom.UIL"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
-        Title="Склад" Height="450" Width="800" FontSize="16">
+        Title="Склад" Height="450" Width="800" FontSize="14" MinWidth="800" MinHeight="450" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -12,7 +12,12 @@
             <RowDefinition Height="0.5*" />
             <RowDefinition Height="3*" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <TextBox Name="searchBox" 
                  Margin="10"
                   VerticalAlignment="Top" 
@@ -46,6 +51,15 @@
             <Button Content="Удалить" Command="{Binding DeleteItemCommand}" />
             <Button Content="Изменить" Command="{Binding EditItemCommand}" />
         </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="3">
+            <TextBlock Text="  Текущий пользователь:  "/>
+            <TextBlock Text="{Binding CurrentUser}"/>
+            <TextBlock Text=" - "/>
+            <TextBlock Text="{Binding CurrentRole}"/>
+            <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
+        </StackPanel>
+        <TextBox Grid.Column="1" Grid.RowSpan="4"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding LogText}"  Padding="10"/>
     </Grid>
     
 </Window>

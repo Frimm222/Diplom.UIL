@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diplom.UIL", "Diplom.UIL\Diplom.UIL.csproj", "{7AC04704-876F-482B-B001-74BE37E0B003}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E5BFCA94-F467-4674-8210-5DD116EB6845} = {E5BFCA94-F467-4674-8210-5DD116EB6845}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diplom.BLL", "Diplom.BLL\Diplom.BLL.csproj", "{E5BFCA94-F467-4674-8210-5DD116EB6845}"
 EndProject

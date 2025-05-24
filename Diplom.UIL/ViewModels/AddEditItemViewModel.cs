@@ -8,14 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Diplom.UIL.ViewModels
 {
     public class AddEditItemViewModel : BaseViewModel
     {
-        private readonly DataBase _dataBase;
+        private readonly DataBase _dataBase = ((App)Application.Current).DataBase;
         private bool isNew = true;
         public Guid Id { get; set; }
         [Reactive] public string Name { get; set; }
@@ -31,7 +30,7 @@ namespace Diplom.UIL.ViewModels
 
         public AddEditItemViewModel(Item item)
         {
-            _dataBase = new DataBase();
+            //_dataBase = new DataBase();
             Categories = _dataBase.GetCategories();
             CancelCommand = ReactiveCommand.Create(Cancel);
             ScanCommand = ReactiveCommand.Create(Scan);

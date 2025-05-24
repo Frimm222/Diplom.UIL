@@ -1,6 +1,5 @@
 ﻿using Diplom.BLL.Models;
-using System.Configuration;
-using System.Data;
+using Diplom.DAL;
 using System.Windows;
 
 namespace Diplom.UIL;
@@ -10,6 +9,7 @@ namespace Diplom.UIL;
 /// </summary>
 public partial class App : Application
 {
-    public Item? SelectedItem { get; set; }
+    public DataBase DataBase { get; set; } = new DataBase();
+    public User? CurrentUser { get; set; }
 }
 
