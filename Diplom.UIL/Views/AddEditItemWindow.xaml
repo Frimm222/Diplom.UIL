@@ -4,9 +4,10 @@
         xmlns:local="clr-namespace:Diplom.UIL.Views"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
         Title="Добавить\Изменить" Height="500" Width="500">
-<!--    <Window.DataContext>
-        <vm:AddEditItemViewModel />
-    </Window.DataContext> -->
+    <Window.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding SaveCommand}" />
+        <KeyBinding Key="Esc" Command="{Binding CancelCommand}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

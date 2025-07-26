@@ -3,11 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Diplom.UIL"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
-        Title="Склад" Height="450" Width="800" FontSize="14" MinWidth="800" MinHeight="450" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+        Title="Склад" Height="450" Width="1000" FontSize="14" MinWidth="1000" MinHeight="450" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
-    <Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}"/>
+            <Style TargetType="{x:Type Window}" BasedOn="{StaticResource BaseWindowStyle}"/>
+            <Style TargetType="{x:Type Grid}" BasedOn="{StaticResource BaseGridStyle}"/>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseBoardStyle}"/>
+            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseListViewStyle}"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*" />
             <RowDefinition Height="3*" />
@@ -15,15 +27,24 @@
             <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TextBox Name="searchBox" 
                  Margin="10"
+                 MinWidth="300"
                   VerticalAlignment="Top" 
-                  HorizontalAlignment="Stretch" 
+                  HorizontalAlignment="Left" 
                   Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                  ToolTip="Поиск по названию" />
+                  ToolTip="Поиск по названию, описанию и штрих-коду" 
+                  Style="{StaticResource PlaceholderTextBoxStyle}" 
+                  Tag="Поиск" 
+                  Grid.Column="0"/>
+        <CheckBox Content="Показывать удалённые"
+                  Margin="13"
+                  Grid.Column="0"
+                  HorizontalAlignment="Right"
+                  IsChecked="{Binding ShowDeleted, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         <ListView Name="listView" 
                   ItemsSource="{Binding Items}" 
                   SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
@@ -41,6 +62,8 @@
                         DisplayMemberBinding="{Binding price}" />
                     <GridViewColumn Header="Кол-во"
                         DisplayMemberBinding="{Binding quantity}" />
+                    <GridViewColumn Header="Штрих-код"
+    DisplayMemberBinding="{Binding barcode}" />
                 </GridView>
             </ListView.View>
         </ListView>
@@ -59,7 +82,15 @@
             <TextBlock Text="{Binding CurrentRole}"/>
             <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
         </StackPanel>
-        <TextBox Grid.Column="1" Grid.RowSpan="4"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding LogText}"  Padding="10"/>
+        <TextBox Grid.Column="1" 
+                 Grid.RowSpan="4" 
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch" 
+                 Text="{Binding LogText}"  
+                 Padding="10"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 x:Name="Logs"/>
     </Grid>
-    
 </Window>

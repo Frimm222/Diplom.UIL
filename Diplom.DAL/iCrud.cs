@@ -11,7 +11,7 @@ namespace Diplom.DAL
     {
         public bool Create(Item item);
         public bool Update(Item item);
-        public bool Delete(Guid id);
+        public bool Delete(Item item);
 
         public Task<List<Item>> GetAll();
     }

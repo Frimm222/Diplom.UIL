@@ -19,8 +19,9 @@ namespace Diplom.UIL.ViewModels
         public string CurrentUser { get; set; } = $"{((App)Application.Current).CurrentUser?.Surname} {((App)Application.Current).CurrentUser?.Name} {((App)Application.Current).CurrentUser?.Patronymic}";
         public string CurrentRole { get; set; } = ((App)Application.Current).CurrentUser?.Role ?? String.Empty;
         [Reactive] public Item? SelectedItem { get; set; }
-        [Reactive] public string? SearchText { get; set; } = string.Empty;
+        [Reactive] public string? SearchText { get; set; } = null;
         [Reactive] public string? LogText { get; set; } = string.Empty;
+        [Reactive] public bool ShowDeleted { get; set; } = false;
         public ReactiveCommand<Unit, Unit> AddItemCommand { get; }
         public ReactiveCommand<Unit, Unit> EditItemCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteItemCommand { get; }
@@ -29,7 +30,7 @@ namespace Diplom.UIL.ViewModels
 
         public MainWindowViewModel()
         {
-            AddItemCommand = ReactiveCommand.Create(Add);
+            AddItemCommand = ReactiveCommand.CreateFromTask(Add);
             LogoutCommand = ReactiveCommand.Create(() =>
             {
                 var loginWindow = new LoginWindow();
@@ -41,61 +42,109 @@ namespace Diplom.UIL.ViewModels
                 x => x.SelectedItem,
                 x => x.Items,
                 (item, items) => item is not null && items is not null);
-            EditItemCommand = ReactiveCommand.Create(Edit, canExecuteEdit);
-            DeleteItemCommand = ReactiveCommand.Create(Delete, canExecuteEdit);
+            EditItemCommand = ReactiveCommand.CreateFromTask(Edit, canExecuteEdit);
+            DeleteItemCommand = ReactiveCommand.CreateFromTask(Delete, canExecuteEdit);
             var canExecuteSearch = this.WhenAnyValue(
                 x => x.SearchText,
                 (searchText) => !string.IsNullOrEmpty(searchText));
             SearchCommand = ReactiveCommand.Create(Search, canExecuteSearch);
-            //_dataBase = new DataBase();
-            _ = LoadItems();
+            this.WhenAnyValue(x => x.ShowDeleted)
+                .Subscribe(async _ =>
+                {
+                    await LoadItemsAsync();
+                });
             this.WhenAnyValue(x => x.SearchText)
                 .Throttle(TimeSpan.FromSeconds(0.3), RxApp.TaskpoolScheduler)
                 .Select(query => query?.Trim())
                 .DistinctUntilChanged()
-                //.Where(query => !string.IsNullOrWhiteSpace(query))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => Search());
+            _ = LoadLogsAsync();
+
         }
-        private async Task LoadItems()
+        private async Task LoadItemsAsync()
         {
             var items = await _dataBase.GetAll();
             Items.Clear();
-            foreach (var item in items)
+            if (ShowDeleted)
             {
-                Items.Add(item);
+                foreach (var item in items)
+                {
+                    Items.Add(item); // Добавляем все элементы, включая удаленные
+                }
+                return;
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    if (item.is_deleted) continue; // Пропускаем удаленные элементы
+                    else { Items.Add(item); }
+                }
+            }
+
+        }
+        private async Task LoadLogsAsync()
+        {
+            var logs = await _dataBase.GetLogsAsync();
+            LogText = string.Empty;
+            foreach (var log in logs)
+            {
+                LogText += $"{log.time} {log.text}\n";
             }
         }
-        private void Add()
+        private async Task Add()
         {
             var viewModel = new AddEditItemWindow(new Item());
             viewModel.ShowDialog();
-            _ = LoadItems();
+            await LoadItemsAsync();
+            await LoadLogsAsync();
         }
-        private void Edit() {
+        private async Task Edit()
+        {
             var viewModel = new AddEditItemWindow(SelectedItem);
             viewModel.ShowDialog();
-            _ = LoadItems();
+            await LoadItemsAsync();
+            await LoadLogsAsync();
         }
-        private void Delete()
+        private async Task Delete()
         {
             var res = MessageBox.Show("Удалить позицию?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (SelectedItem is not null && MessageBoxResult.Yes == res)
             {
-                _dataBase.Delete(SelectedItem.id);
-                _ = LoadItems();
+                _dataBase.Delete(SelectedItem);
+                await LoadItemsAsync();
+                await LoadLogsAsync();
             }
         }
         private async void Search()
         {
-            var items = await _dataBase.GetAll(); // Await the Task<List<Item>> to get the actual list
-            Items.Clear();
-            foreach (var item in items)
+            if (SearchText is not null)
             {
-                if (item.name.ToLower().Contains(SearchText.ToLower()) || item.description.ToLower().Contains(SearchText.ToLower()))
+                var items = await _dataBase.GetAll();
+                Items.Clear();
+                if (ShowDeleted)
                 {
-                    Items.Add(item);
+                    foreach (var item in items)
+                    {
+                        if (item.name.ToLower().Contains(SearchText.ToLower()) || item.description.ToLower().Contains(SearchText.ToLower()) || item.barcode.ToLower().Contains(SearchText.ToLower()))
+                        {
+                            Items.Add(item);
+                        }
+                    }
+                    return;
                 }
+                else
+                {
+                    foreach (var item in items)
+                    {
+                        if ((item.name.ToLower().Contains(SearchText.ToLower()) || item.description.ToLower().Contains(SearchText.ToLower()) || item.barcode.ToLower().Contains(SearchText.ToLower())) && !item.is_deleted)
+                        {
+                            Items.Add(item);
+                        }
+                    }
+                }
+                
             }
         }
     }

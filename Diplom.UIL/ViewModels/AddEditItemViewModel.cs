@@ -18,11 +18,11 @@ namespace Diplom.UIL.ViewModels
         private bool isNew = true;
         public Guid Id { get; set; }
         [Reactive] public string Name { get; set; }
-        [Reactive] public string? Description { get; set; }
+        [Reactive] public string? Description { get; set; } = string.Empty;
         [Reactive] public string? CategoryId { get; set; } = 0.ToString();
         [Reactive] public double Price { get; set; }
         [Reactive] public int Quantity { get; set; }
-        [Reactive] public string? Barcode { get; set; }
+        [Reactive] public string? Barcode { get; set; } = string.Empty;
         public List<Category> Categories { get; set; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
@@ -30,7 +30,6 @@ namespace Diplom.UIL.ViewModels
 
         public AddEditItemViewModel(Item item)
         {
-            //_dataBase = new DataBase();
             Categories = _dataBase.GetCategories();
             CancelCommand = ReactiveCommand.Create(Cancel);
             ScanCommand = ReactiveCommand.Create(Scan);

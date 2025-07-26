@@ -15,9 +15,9 @@ namespace Diplom.UIL.ViewModels
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public LoginWindowViewModel()
         {
-            LoginCommand = ReactiveCommand.Create(Logging);
+            LoginCommand = ReactiveCommand.Create(Loginning);
         }
-        public void Logging()
+        public void Loginning()
         {
             if (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))
             {

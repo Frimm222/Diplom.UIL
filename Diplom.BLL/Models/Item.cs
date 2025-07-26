@@ -11,6 +11,7 @@ namespace Diplom.BLL.Models
         public double price { get; set; }
         public int quantity { get; set; }
         public string? barcode { get; set; }
+        public bool is_deleted { get; set; }
         public Item()
         {
             id = Guid.NewGuid();
@@ -20,6 +21,7 @@ namespace Diplom.BLL.Models
             price = 0;
             quantity = 0;
             barcode = string.Empty;
+            is_deleted = false;
         }
     }
 }

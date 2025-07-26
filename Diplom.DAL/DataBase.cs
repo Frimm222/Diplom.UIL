@@ -21,7 +21,75 @@ namespace Diplom.DAL
             _context.table_items.Add(item);
             if (_context.SaveChanges() > 0)
             {
-                _context.Database.ExecuteSqlRaw($"INSERT INTO table_logging (item_id, text, user_id) VALUES ('{item.id}', 'добавил', '{CurrentId}');");
+                _context.table_logging.Add(new Log
+                {
+                    item_id = item.id,
+                    text = $"добавил {item.quantity}шт.",
+                    user_id = CurrentId,
+                    time = DateTime.UtcNow
+                });
+                _context.SaveChanges();
+                _context.Entry(item).State = EntityState.Detached;
+                return true;
+            }
+            else
+            {
+                _context.Entry(item).State = EntityState.Detached;
+                return false;
+            }
+        }
+
+        public bool Update(Item item)
+        {
+            var existingItem = _context.table_items.AsNoTracking().FirstOrDefault(p => p.id.Equals(item.id));
+            _context.table_items.Update(item);
+            if (_context.SaveChanges() > 0) {
+                if (existingItem.quantity != item.quantity && existingItem.price != item.price)
+                {
+                    _context.table_logging.Add(new Log
+                    {
+                        item_id = item.id,
+                        text = $"изменил количество с {existingItem.quantity} на {item.quantity} и изменил цену с {existingItem.price} на {item.price}",
+                        user_id = CurrentId,
+                        time = DateTime.UtcNow
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                if (existingItem.quantity != item.quantity)
+                {
+                    _context.table_logging.Add(new Log
+                    {
+                        item_id = item.id,
+                        text = $"изменил количество с {existingItem.quantity} на {item.quantity}",
+                        user_id = CurrentId,
+                        time = DateTime.UtcNow
+                    });
+                    _context.SaveChanges();
+                }
+                else if (existingItem.price != item.price)
+                {
+                    _context.table_logging.Add(new Log
+                    {
+                        item_id = item.id,
+                        text = $"изменил цену с {existingItem.price} на {item.price}",
+                        user_id = CurrentId,
+                        time = DateTime.UtcNow
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    _context.table_logging.Add(new Log
+                    {
+                        item_id = item.id,
+                        text = "изменил",
+                        user_id = CurrentId,
+                        time = DateTime.UtcNow
+                    });
+                    _context.SaveChanges();
+                }
+                _context.Entry(item).State = EntityState.Detached; // Отсоединяем объект от контекста
                 return true;
             }
             else
@@ -30,16 +98,25 @@ namespace Diplom.DAL
             }
         }
 
-        public bool Update(Item item)
+        public bool Delete(Item item)
         {
+            item.is_deleted = true;
+            item.category_id = _context.table_category.FirstOrDefault(c => c.name == item.category_id)?.id.ToString() ?? string.Empty;
             _context.table_items.Update(item);
-            return _context.SaveChanges() > 0;
-        }
-
-        public bool Delete(Guid id)
-        {
-            _context.table_items.Remove(_context.table_items.Find(id));
-            return _context.SaveChanges() > 0;
+            int res = _context.SaveChanges();
+            _context.Entry(item).State = EntityState.Detached;
+            if (res > 0)
+            {
+                _context.table_logging.Add(new Log
+                {
+                    item_id = item.id,
+                    text = "удалил",
+                    user_id = CurrentId,
+                    time = DateTime.UtcNow
+                });
+                _context.SaveChanges();
+            }
+            return res > 0;
         }
 
         public async Task<List<Item>> GetAll()
@@ -54,9 +131,25 @@ namespace Diplom.DAL
                                    category_id = c.name,
                                    price = i.price,
                                    quantity = i.quantity,
-                                   barcode = i.barcode
+                                   barcode = i.barcode,
+                                   is_deleted = i.is_deleted
                                }).ToListAsync();
             return items;
+        }
+        public async Task<List<Log>> GetLogsAsync()
+        {
+            var logs = await (from l in _context.table_logging
+                              join u in _context.table_users on l.user_id equals u.id
+                              join i in _context.table_items on l.item_id equals i.id
+                              orderby l.time descending
+                              select new Log
+                              {
+                                  item_id = l.item_id,
+                                  text = $"{u.Name} {u.Patronymic} {l.text} {i.name}",
+                                  user_id = l.user_id,
+                                  time = l.time
+                              }).Take(50).ToListAsync();
+            return logs;
         }
         public List<Category> GetCategories()
         {

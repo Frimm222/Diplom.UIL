@@ -3,17 +3,27 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
        xmlns:local="clr-namespace:Diplom.UIL.Views"
-       Title="LoginWindow" Height="200" Width="500" WindowStartupLocation="CenterScreen" FontSize="16">
+       Title="Вход в учётную запись" Height="200" Width="500" WindowStartupLocation="CenterScreen" FontSize="16"
+        FocusManager.FocusedElement="{Binding ElementName=loginTextBox}">
    <Window.DataContext>
        <vm:LoginWindowViewModel />
    </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButtonStyle}"/>
+            <Style TargetType="{x:Type Grid}" BasedOn="{StaticResource BaseGridStyle}"/>
+        </ResourceDictionary>
+    </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="Enter" Command="{Binding LoginCommand}" />
     </Window.InputBindings>
     <Grid>
        <Grid.ColumnDefinitions>
            <ColumnDefinition Width="*" />
-           <ColumnDefinition Width="2*" />
+           <ColumnDefinition Width="3*" />
        </Grid.ColumnDefinitions>
        <Grid.RowDefinitions>
            <RowDefinition Height="*" />
@@ -21,11 +31,41 @@
            <RowDefinition Height="*" />
        </Grid.RowDefinitions>
 
-       <TextBlock Grid.Row="0" Grid.Column="0" Text="Логин:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10"/>
-       <TextBox Grid.Row="0" Grid.Column="1" Name="loginTextBox" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
-       <TextBlock Grid.Row="1" Grid.Column="0" Text="Пароль:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Name="passwordTextBox" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Войти" Name="loginButton" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Command="{Binding LoginCommand}"/>
+       <TextBlock Grid.Row="0" 
+                  Grid.Column="0" 
+                  Text="Логин:" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Right" 
+                  Margin="10"/>
+       <TextBox Grid.Row="0" 
+                Grid.Column="1" 
+                Name="loginTextBox" 
+                Margin="10" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Stretch" 
+                Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
+       <TextBlock Grid.Row="1" 
+                  Grid.Column="0" 
+                  Text="Пароль:" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Right" 
+                  Margin="10"/>
+        <TextBox Grid.Row="1" 
+                 Grid.Column="1" 
+                 Name="passwordTextBox" 
+                 Margin="10" 
+                 VerticalAlignment="Center" 
+                 HorizontalAlignment="Stretch" 
+                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Grid.Row="2" 
+                Grid.Column="0" 
+                Grid.ColumnSpan="2" 
+                Content="Войти" 
+                Name="loginButton" 
+                Margin="10" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Stretch" 
+                Command="{Binding LoginCommand}"/>
 
    </Grid>
 </Window>
