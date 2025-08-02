@@ -1,5 +1,4 @@
 ﻿using Diplom.BLL.Models;
-using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace Diplom.UIL.ViewModels
         public double Price { get; set; }
         public int Quantity { get; set; }
         public string? Barcode { get; set; } = string.Empty;
-        public string Img { get; set; } = "https://static.vecteezy.com/system/resources/thumbnails/052/836/202/small_2x/a-black-and-white-image-of-a-warehouse-free-vector.jpg";
+        public string? Image { get; set; } = string.Empty;
         public List<Category> Categories { get; set; }
         public ExtendedWindowViewModel(Item item)
         {
@@ -28,6 +27,7 @@ namespace Diplom.UIL.ViewModels
             Price = item.price;
             Quantity = item.quantity;
             Barcode = item.barcode;
+            Image = item.image;
         }
     }
 }

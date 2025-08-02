@@ -51,24 +51,24 @@
                   IsChecked="{Binding ShowDeleted, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         <ListView Name="listView" 
                   ItemsSource="{Binding Items}" 
-                  SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectedItem="{Binding SelectedItem}" 
                   SelectionMode="Single" 
                   Grid.Row="1"
-                  ItemContainerStyle="{StaticResource itemstyle}">
+                  Grid.Column="0"
+                  ItemContainerStyle="{StaticResource itemstyle}"
+                  MouseLeftButtonDown="GridViewColumnHeaderClickedHandler">
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="True">
                     <GridViewColumn Header="Товар"
                         DisplayMemberBinding="{Binding name}" />
                     <GridViewColumn Header="Категория"
                         DisplayMemberBinding="{Binding category_id}" />
-                    <GridViewColumn Header="Описание"
-                        DisplayMemberBinding="{Binding description}" />
                     <GridViewColumn Header="Цена"
                         DisplayMemberBinding="{Binding price}" />
                     <GridViewColumn Header="Кол-во"
                         DisplayMemberBinding="{Binding quantity}" />
                     <GridViewColumn Header="Штрих-код"
-    DisplayMemberBinding="{Binding barcode}" />
+                        DisplayMemberBinding="{Binding barcode}" />
                 </GridView>
             </ListView.View>
         </ListView>
