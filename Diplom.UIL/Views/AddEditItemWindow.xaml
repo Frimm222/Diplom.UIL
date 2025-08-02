@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -36,7 +36,7 @@
         <TextBox x:Name="InputName" Grid.Row="0" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
         
         <Label Content="Описание" Grid.Row="1" Grid.Column="0" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Right" Target="{Binding ElementName=InputDescription}"/>
-        <TextBox x:Name="InputDescription" Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Description}"/>
+        <TextBox x:Name="InputDescription" Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Description}" Height="100px" TextWrapping="Wrap"/>
         
         <Label Content="Категория" Grid.Row="2" Grid.Column="0" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Right" Target="{Binding ElementName=InputCategory}"/>
         <ComboBox x:Name="InputCategory"  Grid.Row="2" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" SelectedValue="{Binding CategoryId}" ItemsSource="{Binding Categories}" DisplayMemberPath="name" SelectedValuePath="id"/>

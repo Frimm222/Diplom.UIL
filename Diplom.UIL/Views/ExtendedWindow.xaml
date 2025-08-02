@@ -43,10 +43,12 @@
                    Grid.Column="0"
                    Grid.Row="5"
                    Style="{StaticResource BaseTextTagStyle}"/>
-        <TextBlock Text="{Binding Description}"
-                   Grid.Column="0"
-                   Grid.RowSpan="3"
-                   Grid.Row="6"/>
+        <ScrollViewer Grid.Column="0"
+                      Grid.RowSpan="3"
+                      Grid.Row="6">
+            <TextBlock Text="{Binding Description}"
+                       TextWrapping="Wrap" />
+        </ScrollViewer>
         <TextBlock Text=" Категория:"
                    Grid.Column="1"
                    Grid.Row="1"

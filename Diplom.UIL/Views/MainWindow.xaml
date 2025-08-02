@@ -80,7 +80,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="3">
-            <TextBlock Text="  Текущий пользователь:  "/>
+            <TextBlock Text="  Пользователь:  "/>
             <TextBlock Text="{Binding CurrentUser}"/>
             <TextBlock Text=" - "/>
             <TextBlock Text="{Binding CurrentRole}"/>
