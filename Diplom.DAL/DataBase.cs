@@ -132,7 +132,8 @@ namespace Diplom.DAL
                                    price = i.price,
                                    quantity = i.quantity,
                                    barcode = i.barcode,
-                                   is_deleted = i.is_deleted
+                                   is_deleted = i.is_deleted,
+                                   image = i.image
                                }).ToListAsync();
             return items;
         }

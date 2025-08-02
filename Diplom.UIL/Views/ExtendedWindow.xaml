@@ -38,7 +38,7 @@
                Grid.Row="1"
                Grid.RowSpan="4"
                ToolTip="Изображение"
-               Source="{Binding Img}" />
+               Source="{Binding Image}" />
         <TextBlock Text=" Описание:"
                    Grid.Column="0"
                    Grid.Row="5"

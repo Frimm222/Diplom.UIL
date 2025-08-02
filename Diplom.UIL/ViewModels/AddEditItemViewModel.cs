@@ -1,5 +1,4 @@
 ﻿using Diplom.BLL.Models;
-using Diplom.DAL;
 using Diplom.UIL.Views;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -22,6 +21,7 @@ namespace Diplom.UIL.ViewModels
         [Reactive] public double Price { get; set; }
         [Reactive] public int Quantity { get; set; }
         [Reactive] public string? Barcode { get; set; } = string.Empty;
+        [Reactive] public string? Image {  get; set; } = string.Empty;
         public List<Category> Categories { get; set; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
@@ -49,6 +49,7 @@ namespace Diplom.UIL.ViewModels
                 Price = item.price;
                 Quantity = item.quantity;
                 Barcode = item.barcode;
+                Image = item.image;
             }
         }
         public void Save()
@@ -62,7 +63,8 @@ namespace Diplom.UIL.ViewModels
                     category_id = CategoryId,
                     price = Price,
                     quantity = Quantity,
-                    barcode = Barcode
+                    barcode = Barcode,
+                    image = Image
                 });
             }
             else
@@ -75,7 +77,8 @@ namespace Diplom.UIL.ViewModels
                     category_id = CategoryId,
                     price = Price,
                     quantity = Quantity,
-                    barcode = Barcode
+                    barcode = Barcode,
+                    image = Image
                 });
             }
             Cancel();

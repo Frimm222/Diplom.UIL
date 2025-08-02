@@ -29,7 +29,6 @@ public class DataBaseContext : DbContext
         {
             entity.HasKey(p => p.item_id);
         });
-
         base.OnModelCreating(modelBuilder);
     }
 }

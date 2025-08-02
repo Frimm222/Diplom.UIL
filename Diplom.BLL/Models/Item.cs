@@ -12,6 +12,7 @@ namespace Diplom.BLL.Models
         public int quantity { get; set; }
         public string? barcode { get; set; }
         public bool is_deleted { get; set; }
+        public string? image {  get; set; }
         public Item()
         {
             id = Guid.NewGuid();
@@ -22,6 +23,7 @@ namespace Diplom.BLL.Models
             quantity = 0;
             barcode = string.Empty;
             is_deleted = false;
+            image = string.Empty;
         }
     }
 }
