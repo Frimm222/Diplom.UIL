@@ -1,5 +1,4 @@
 ﻿using Diplom.BLL.Models;
-using Diplom.DAL;
 using Diplom.UIL.Views;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,17 +8,16 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
 namespace Diplom.UIL.ViewModels
 {
     class MainWindowViewModel : BaseViewModel
     {
-        private readonly DataBase _dataBase = ((App)Application.Current).DataBase;
-
         public ObservableCollection<Item> Items { get; } = [];
         public string CurrentUser { get; set; } = $"{((App)Application.Current).CurrentUser?.Surname} {((App)Application.Current).CurrentUser?.Name} {((App)Application.Current).CurrentUser?.Patronymic}";
         public string CurrentRole { get; set; } = ((App)Application.Current).CurrentUser?.Role ?? String.Empty;
         [Reactive] public Item? SelectedItem { get; set; }
-        [Reactive] public string? SearchText { get; set; } = null;
+        [Reactive] public string? SearchText { get; set; } 
         [Reactive] public string? LogText { get; set; } = string.Empty;
         [Reactive] public bool ShowDeleted { get; set; } = false;
         public ReactiveCommand<Unit, Unit> AddItemCommand { get; }
@@ -27,7 +25,6 @@ namespace Diplom.UIL.ViewModels
         public ReactiveCommand<Unit, Unit> DeleteItemCommand { get; }
         public ReactiveCommand<Unit, Unit> SearchCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
-
         public MainWindowViewModel()
         {
             AddItemCommand = ReactiveCommand.CreateFromTask(Add);
@@ -70,7 +67,7 @@ namespace Diplom.UIL.ViewModels
             {
                 foreach (var item in items)
                 {
-                    Items.Add(item); // Добавляем все элементы, включая удаленные
+                    Items.Add(item);
                 }
                 return;
             }
@@ -78,11 +75,10 @@ namespace Diplom.UIL.ViewModels
             {
                 foreach (var item in items)
                 {
-                    if (item.is_deleted) continue; // Пропускаем удаленные элементы
+                    if (item.is_deleted) continue;
                     else { Items.Add(item); }
                 }
             }
-
         }
         private async Task LoadLogsAsync()
         {
@@ -144,7 +140,15 @@ namespace Diplom.UIL.ViewModels
                         }
                     }
                 }
-                
+            }
+        }
+        public void ExtendedWindow()
+        {
+            if (SelectedItem is not null)
+            {
+                var window = new ExtendedWindow(SelectedItem);
+                window.Owner = Application.Current.MainWindow;
+                window.Show();
             }
         }
     }

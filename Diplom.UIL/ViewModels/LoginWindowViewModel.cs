@@ -1,6 +1,4 @@
-﻿using Diplom.DAL;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+﻿using ReactiveUI;
 using System.Reactive;
 using System.Windows;
 
@@ -8,10 +6,8 @@ namespace Diplom.UIL.ViewModels
 {
     class LoginWindowViewModel : BaseViewModel
     {
-        private readonly DataBase _dataBase = ((App)Application.Current).DataBase;
-
-        [Reactive] public string? Login { get; set; }
-        [Reactive] public string? Password { get; set; }
+        public string? Login { get; set; }
+        public string? Password { get; set; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public LoginWindowViewModel()
         {
@@ -21,7 +17,7 @@ namespace Diplom.UIL.ViewModels
         {
             if (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))
             {
-                MessageBox.Show("Введите ФИО и пароль");
+                MessageBox.Show("Введите логин и пароль");
                 return;
             }
             var user = _dataBase.GetUser(Login, Password);
@@ -35,7 +31,7 @@ namespace Diplom.UIL.ViewModels
             }
             else
             {
-                MessageBox.Show("Неверные ФИО или пароль");
+                MessageBox.Show("Неверные логин или пароль");
             }
         }
     }

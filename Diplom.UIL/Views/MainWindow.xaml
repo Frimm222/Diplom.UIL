@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Diplom.UIL"
         xmlns:vm="clr-namespace:Diplom.UIL.ViewModels"
-        Title="Склад" Height="450" Width="1000" FontSize="14" MinWidth="1000" MinHeight="450" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
+        Title="Склад" Height="450" Width="1150" FontSize="14" MinWidth="1150" MinHeight="450" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -17,6 +17,10 @@
             <Style TargetType="{x:Type Grid}" BasedOn="{StaticResource BaseGridStyle}"/>
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseBoardStyle}"/>
             <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseListViewStyle}"/>
+            <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
+                <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+            </Style>
+            <Style TargetType="{x:Type GridSplitter}" BasedOn="{StaticResource BaseSplitterStyle}"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="Transparent">
@@ -27,8 +31,8 @@
             <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition MinWidth="580px"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TextBox Name="searchBox" 
                  Margin="10"
@@ -49,7 +53,8 @@
                   ItemsSource="{Binding Items}" 
                   SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
                   SelectionMode="Single" 
-                  Grid.Row="1">
+                  Grid.Row="1"
+                  ItemContainerStyle="{StaticResource itemstyle}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Товар"
@@ -80,8 +85,11 @@
             <TextBlock Text="{Binding CurrentUser}"/>
             <TextBlock Text=" - "/>
             <TextBlock Text="{Binding CurrentRole}"/>
-            <Button Content="Выйти" Command="{Binding LogoutCommand}"/>
+            <Button Content="Выйти" 
+                    Command="{Binding LogoutCommand}"/>
         </StackPanel>
+        <GridSplitter Width="5px"
+                      Grid.RowSpan="4"/>
         <TextBox Grid.Column="1" 
                  Grid.RowSpan="4" 
                  HorizontalAlignment="Stretch"

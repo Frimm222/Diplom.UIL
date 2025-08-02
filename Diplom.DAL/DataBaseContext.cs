@@ -1,8 +1,6 @@
 ﻿using Diplom.BLL.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.IO;
-using System.Windows;
 
 public class DataBaseContext : DbContext
 {

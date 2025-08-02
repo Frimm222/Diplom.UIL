@@ -14,7 +14,6 @@ namespace Diplom.UIL.ViewModels
 {
     public class AddEditItemViewModel : BaseViewModel
     {
-        private readonly DataBase _dataBase = ((App)Application.Current).DataBase;
         private bool isNew = true;
         public Guid Id { get; set; }
         [Reactive] public string Name { get; set; }
